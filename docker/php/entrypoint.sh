@@ -23,6 +23,8 @@ setup_db() {
   php artisan db:seed --class=DatabaseSeeder
   php artisan db:seed --class=UserSeeder
   php artisan cache:clear
+  chown -R www-data:www-data /var/www/html
+  chmod -R g+w /var/www/html
 }
 
 load_data() {
@@ -31,7 +33,7 @@ load_data() {
 }
 
 log "Waiting for Postgres..."
-/root/wait-for-it.sh db:5432 --timeout=180 -- echo "PostgreSQL started"
+/root/wait-for-it.sh db:5432 --timeout=10 -- echo "PostgreSQL started"
 
 init_project
 setup_db
@@ -40,6 +42,9 @@ load_data
 log "Start cron"
 printenv | sed 's/^\(.*\)$/export \1/g' | grep -E "^export GITLAB" > /root/project_env.sh
 service cron start
+
+log "Start nginx"
+nginx
 
 log "Start php-fpm"
 php-fpm

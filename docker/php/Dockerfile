@@ -72,4 +72,7 @@ ADD . .
 COPY ./docker/php/.env.template ./.env
 RUN composer dump-autoload
 
+RUN apt update && apt install -y nginx
+COPY docker/nginx/default.conf /etc/nginx/sites-available/default
+
 ENTRYPOINT ["/root/entrypoint.sh"]

@@ -69,6 +69,10 @@ abstract class GitlabServiceAbstract
                 if ($e->getCode() == Response::HTTP_NOT_FOUND) {
                     return $data;
                 }
+                if ($e->getCode() == Response::HTTP_FORBIDDEN) {
+                    echo "\n Error 403, url=".$url." \n";
+                    return $data;
+                }
                 throw $e;
             }
             $content = $response->getBody()->getContents();
